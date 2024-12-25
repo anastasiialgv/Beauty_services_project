@@ -11,7 +11,7 @@ export default function Header() {
                     </span>
                 <div>
                     <Link to='/' className="nav-link d-inline text-light ">Home</Link>
-                    <Link to='/opinie' className="nav-link d-inline text-light ms-3">Reviews</Link>
+                    <Link to='/reviews' className="nav-link d-inline text-light ms-3">Reviews</Link>
                     <Link to='/' className="nav-link d-inline text-light ms-3">Account</Link>
                 </div>
                 </div>
