@@ -1,0 +1,16 @@
+header {
+    margin-bottom: 30px;
+}
+
+.container {
+    height: 80px;
+}
+
+.nav-link {
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #ffdd57 !important;
+}
