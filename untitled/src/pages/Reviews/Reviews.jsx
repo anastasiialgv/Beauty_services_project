@@ -17,7 +17,7 @@ export default function Reviews(isAuthenticated) {
       .catch((err) => {
         console.error("Error /getservices", err);
       });
-  }, []);
+  }, [data]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,7 +53,6 @@ export default function Reviews(isAuthenticated) {
         },
       )
       .then((response) => {
-        setData([...data, response.data]);
         setReview("");
         setRating(0);
       })

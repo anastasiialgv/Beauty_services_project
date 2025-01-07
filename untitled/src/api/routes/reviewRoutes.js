@@ -17,7 +17,7 @@ router.get("/getreviews", (req, res) => {
 router.post("/createreview", authenticateToken, (req, res) => {
   const { text, rating, date } = req.body;
   const user_email = req.user.email;
-
+  console.log(date);
   if (!req.user || !req.user.email) {
     res.status(401).send("Unauthorized: No email in token");
     return;
@@ -28,7 +28,7 @@ router.post("/createreview", authenticateToken, (req, res) => {
     if (err) {
       return res.status(500).send({ error: "Database error" });
     }
-    res.status(201).send("Review created successfully");
+    res.status(201).send();
   });
 });
 
