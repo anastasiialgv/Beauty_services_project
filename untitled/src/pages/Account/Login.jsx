@@ -30,9 +30,9 @@ export default function Login({ setIsAuthenticated }) {
   return (
     <div>
       <Header />
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="d-flex justify-content-center align-items-center ">
         <div
-          className="card p-4"
+          className="card p-4 background"
           style={{ width: "500px", borderRadius: "15px", borderColor: "black" }}
         >
           <form onSubmit={handleSubmit}>

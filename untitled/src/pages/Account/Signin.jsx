@@ -51,7 +51,7 @@ export default function Signin() {
       <Header />
       <div className="d-flex justify-content-center align-items-center">
         <div
-          className="card p-4"
+          className="card p-4 background"
           style={{ width: "500px", borderRadius: "15px", borderColor: "black" }}
         >
           <h3 className="text-center">fill in to complete registration</h3>

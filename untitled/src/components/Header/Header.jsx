@@ -15,7 +15,7 @@ export default function Header() {
             <Link to="/reviews" className="nav-link d-inline text-light ms-3">
               Reviews
             </Link>
-            <Link to="/login" className="nav-link d-inline text-light ms-3">
+            <Link to="/account" className="nav-link d-inline text-light ms-3">
               Account
             </Link>
           </div>

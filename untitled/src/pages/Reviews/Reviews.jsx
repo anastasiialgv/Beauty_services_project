@@ -52,7 +52,7 @@ export default function Reviews(isAuthenticated) {
           },
         },
       )
-      .then((response) => {
+      .then(() => {
         setReview("");
         setRating(0);
       })
@@ -76,8 +76,8 @@ export default function Reviews(isAuthenticated) {
           text={element.text}
         />
       ))}
-      <div className="card  mb-4 border-black bg-light w-50 mx-auto">
-        <div className="card-body">
+      <div className="card  mb-4 border-black bg-light w-50 mx-auto background">
+        <div className="card-body background">
           <form onSubmit={handleSubmit}>
             <div className="my-3">
               <label htmlFor={"reviewText"} className="form-label text-info ">
@@ -106,7 +106,7 @@ export default function Reviews(isAuthenticated) {
             {error && <div className="text-danger mt-2">{error}</div>}
             <button
               type="submit"
-              className="btn btn-outline-dark w-100"
+              className="btn btn-dark w-100"
               disabled={!isAuthenticated.isAuthenticated}
             >
               Submit

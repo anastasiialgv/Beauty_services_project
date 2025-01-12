@@ -7,8 +7,8 @@ export default function Review({ name, date, rating, text }) {
     return stars;
   };
   return (
-    <div className="card  mb-4 border-black bg-light w-50 mx-auto">
-      <div className="card-body">
+    <div className="card  mb-4 border-black bg-light w-50 mx-auto ">
+      <div className="card-body background">
         <div className="d-flex align-items-center ">
           <h5 className="fw-bold card-title">{name}</h5>
           <small className="ms-3">{new Date(date).toLocaleDateString()}</small>

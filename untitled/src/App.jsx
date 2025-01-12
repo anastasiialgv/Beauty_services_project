@@ -7,6 +7,7 @@ import Login from "./pages/Account/Login.jsx";
 import Signin from "./pages/Account/Signin.jsx";
 import Appointment from "./pages/Appointment.jsx";
 import Success from "./pages/Account/Success.jsx";
+import Account from "./pages/Account/Account.jsx";
 import { useState } from "react";
 
 function App() {
@@ -22,6 +23,16 @@ function App() {
         <Route
           path="/login"
           element={<Login setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route
+          path={"/account"}
+          element={
+            isAuthenticated ? (
+              <Account />
+            ) : (
+              <Login setIsAuthenticated={setIsAuthenticated} />
+            )
+          }
         />
         <Route path="/signin" element={<Signin />} />
         <Route path="/appointment" element={<Appointment />} />
