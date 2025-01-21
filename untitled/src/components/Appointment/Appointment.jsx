@@ -1,7 +1,6 @@
 import { useState } from "react";
-import "./Appointment.css";
 
-export default function Appointment({ service, date, time }) {
+export default function Appointment({ service, date, time, onDelete }) {
   const [isExpanded, setIsExpanded] = useState(false); // Управляет видимостью деталей
 
   const toggleDetails = () => {
@@ -24,6 +23,9 @@ export default function Appointment({ service, date, time }) {
         >
           ◥
         </span>
+      </button>
+      <button onClick={onDelete} className="buttonupdate ms-5">
+        <img src="src/assets/delete.png" />
       </button>
       {isExpanded && (
         <div style={{ marginTop: "10px" }}>

@@ -1,4 +1,3 @@
-import Header from "../components/Header/Header.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +19,7 @@ export default function Appointment() {
       .then((response) => {
         setData(response.data);
         if (response.data.length > 0) {
-          setService(response.data[0].name); // Set the initial service to the first option
+          setService(response.data[0].name);
         }
       })
       .catch((err) => {
@@ -56,7 +55,6 @@ export default function Appointment() {
 
   return (
     <div>
-      <Header />
       <div className="d-flex justify-content-center align-items-center">
         <div
           className="card p-4"

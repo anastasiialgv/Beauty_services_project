@@ -66,7 +66,6 @@ export default function Reviews(isAuthenticated) {
   };
   return (
     <div>
-      <Header />
       {data.map((element) => (
         <Review
           key={element.idreview}

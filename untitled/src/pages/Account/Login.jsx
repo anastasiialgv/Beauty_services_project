@@ -1,9 +1,8 @@
-import Header from "../../components/Header/Header.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-export default function Login({ setIsAuthenticated }) {
+export default function Login({ setIsAuthenticated, setUserRole }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -18,9 +17,14 @@ export default function Login({ setIsAuthenticated }) {
       .post("http://localhost:5000/login", { email, password })
       .then((response) => {
         localStorage.setItem("token", response.data.token);
+
         setIsAuthenticated(true);
-        alert(response.data.message);
-        navigate("/");
+        setUserRole(response.data.role);
+        {
+          response.data.role === "ADMIN"
+            ? navigate("/adminpanel")
+            : navigate("/account");
+        }
       })
       .catch(() => {
         setError("Invalid email or password");
@@ -29,7 +33,6 @@ export default function Login({ setIsAuthenticated }) {
 
   return (
     <div>
-      <Header />
       <div className="d-flex justify-content-center align-items-center ">
         <div
           className="card p-4 background"
@@ -64,7 +67,7 @@ export default function Login({ setIsAuthenticated }) {
             <div className="mt-2">
               <span>Don't have an account? </span>
               <Link to="/signin" className="text-info">
-                Sign In
+                Sign Up
               </Link>
             </div>
           </form>

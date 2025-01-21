@@ -48,7 +48,6 @@ export default function Signin() {
 
   return (
     <div>
-      <Header />
       <div className="d-flex justify-content-center align-items-center">
         <div
           className="card p-4 background"

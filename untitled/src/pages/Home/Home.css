@@ -1,3 +1,19 @@
 .row {
     display: flex;
 }
+
+.pagination {
+    display: flex;
+    position: fixed;
+    align-items: center;
+    background-color: blanchedalmond;
+}
+
+.bp {
+    height: 30px;
+}
+
+button {
+    height: 50px;
+}
+

@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../db.js";
 import { authenticateToken } from "../middleware/auth.js";
-import { jwtDecode } from "jwt-decode";
 
 const router = express.Router();
 const SECRET_KEY = "glostie";
@@ -55,7 +54,7 @@ router.post("/login", (req, res) => {
       if (err || !isValid) {
         return res.status(401).send({ error: "Invalid credentials" });
       }
-      console.log(user.email, user.id);
+
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
         SECRET_KEY,
@@ -63,7 +62,7 @@ router.post("/login", (req, res) => {
           expiresIn: "1h",
         },
       );
-      res.status(200).send({ message: "Login successful", token });
+      res.send({ token, role: user.role });
     });
   });
 });
@@ -72,7 +71,7 @@ router.get("/getuser", authenticateToken, (req, res) => {
   const email = req.user.email;
   const query =
     "SELECT u.email, u.name, u.surname, u.age, " +
-    "o.id AS order_id, o.service, o.date, o.time " +
+    "o.id, o.service, o.date, o.time " +
     "FROM user u LEFT JOIN appointment o ON " +
     "u.email = o.user_email WHERE u.email = ?;";
 
@@ -89,9 +88,9 @@ router.get("/getuser", authenticateToken, (req, res) => {
       surname: results[0].surname,
       age: results[0].age,
       appointments: results
-        .filter((row) => row.order_id)
+        .filter((row) => row.id)
         .map((row) => ({
-          order_id: row.order_id,
+          id: row.id,
           service: row.service,
           date: row.date,
           time: row.time,
@@ -99,6 +98,27 @@ router.get("/getuser", authenticateToken, (req, res) => {
     };
 
     res.json(user);
+  });
+});
+router.post("/updateuser", authenticateToken, (req, res) => {
+  const { email, name, surname, age } = req.body;
+  const query =
+    "UPDATE user SET name = ?, surname = ?, age = ? WHERE email = ?";
+  db.query(query, [name, surname, age, email], (err, result) => {
+    if (err) {
+      return res.status(500).send({ error: "Database error /updateuser" });
+    }
+    res.status(200).send({ message: "User updated successfully" });
+  });
+});
+router.delete("/deleteuser", authenticateToken, (req, res) => {
+  const email = req.user.email;
+  const query = "DELETE FROM user WHERE email = ?";
+  db.query(query, [email], (err, result) => {
+    if (err) {
+      return res.status(500).send({ error: "Database error /deleteuser" });
+    }
+    res.status(200).send({ message: "User deleted successfully" });
   });
 });
 export default router;

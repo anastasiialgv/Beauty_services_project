@@ -6,14 +6,17 @@ import Reviews from "./pages/Reviews/Reviews.jsx";
 import Login from "./pages/Account/Login.jsx";
 import Signin from "./pages/Account/Signin.jsx";
 import Appointment from "./pages/Appointment.jsx";
-import Success from "./pages/Account/Success.jsx";
 import Account from "./pages/Account/Account.jsx";
 import { useState } from "react";
+import AdminPanel from "./pages/AdminPanel/AdminPanel.jsx";
+import Header from "./components/Header/Header.jsx";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState("");
   return (
     <>
+      <Header role={userRole} />
       <Routes>
         <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
         <Route
@@ -22,7 +25,12 @@ function App() {
         />
         <Route
           path="/login"
-          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+          element={
+            <Login
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+            />
+          }
         />
         <Route
           path={"/account"}
@@ -30,13 +38,16 @@ function App() {
             isAuthenticated ? (
               <Account />
             ) : (
-              <Login setIsAuthenticated={setIsAuthenticated} />
+              <Login
+                setIsAuthenticated={setIsAuthenticated}
+                setUserRole={setUserRole}
+              />
             )
           }
         />
         <Route path="/signin" element={<Signin />} />
         <Route path="/appointment" element={<Appointment />} />
-        <Route path="/success" element={<Success />} />
+        <Route path="/adminpanel" element={<AdminPanel />} />
       </Routes>
     </>
   );
