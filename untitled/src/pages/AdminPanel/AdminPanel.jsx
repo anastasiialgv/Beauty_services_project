@@ -5,21 +5,23 @@ import Service from "../../components/Service/Service.jsx";
 import Form from "../../components/Form/Form.jsx";
 
 export default function AdminPanel() {
+  const [appointments, setAppointments] = useState([]);
   const [services, setServices] = useState([]);
-  const [Vappontments, setVappontments] = useState([]);
-  const [Vservices, setVservices] = useState([]);
+  const [showAppointments, setShowAppointments] = useState([]);
+  const [showServices, setShowServices] = useState([]);
+  const [error, setError] = useState("");
   const toogleState = (state) => {
     state((prev) => !prev);
   };
-  const [data, setData] = useState([]);
   useEffect(() => {
     axios
       .get("http://localhost:5000/getappoinments")
       .then((response) => {
-        setData(response.data);
+        setAppointments(response.data);
       })
       .catch((err) => {
         console.error("Error /getappointments", err);
+        setError("Failed to fetch appointments. Please try again.");
       });
   }, []);
   useEffect(() => {
@@ -30,11 +32,11 @@ export default function AdminPanel() {
       })
       .catch((err) => {
         console.error("Error /getservices", err);
+        setError("Failed to fetch services. Please try again.");
       });
   }, []);
   const handleSub = async (addedData) => {
     try {
-      console.log("Submitting data:", addedData);
       await axios
         .post("http://localhost:5000/addservice", addedData, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -44,7 +46,8 @@ export default function AdminPanel() {
           setServices((prevServices) => [...prevServices, newService]);
         });
     } catch (err) {
-      console.error("Error updating user data:", err);
+      console.error("Error adding service:", err);
+      setError("Failed to add service. Please try again.");
     }
   };
   const onDelete = async (name) => {
@@ -57,6 +60,7 @@ export default function AdminPanel() {
       );
     } catch (err) {
       console.error("Error deleting service:", err);
+      setError("Failed to delete service. Please try again.");
     }
   };
   return (
@@ -64,29 +68,27 @@ export default function AdminPanel() {
       <div className="card-body background">
         <div style={{ textAlign: "center" }}>
           <h1>Manage your site here</h1>
+          {error && <div className="alert alert-danger">{error}</div>}
         </div>
-
-        <p>
+        <div className="mb-4">
           <strong>Look at all appointments</strong>
           <button
             className="toggle-button"
             style={{ background: "lightgray" }}
-            onClick={() => toogleState(setVappontments)}
+            onClick={() => toogleState(setShowAppointments)}
           >
             <span
               style={{
                 display: "inline-block",
-                transform: Vappontments ? "rotate(90deg)" : "rotate(0deg)",
+                transform: showAppointments ? "rotate(90deg)" : "rotate(0deg)",
                 transition: "transform 0.2s ease",
               }}
             >
               ◥
             </span>
           </button>
-        </p>
-        {Vappontments &&
-          data.map((item) => (
-            <table key={item.id} className="table table-bordered custom-table">
+          {showAppointments && (
+            <table className="table table-bordered custom-table">
               <thead>
                 <tr>
                   <th>Service</th>
@@ -96,62 +98,63 @@ export default function AdminPanel() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    {item.service} <br />
-                  </td>
-                  <td>{item.name}</td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td>{item.time.slice(0, 5)}</td>
-                </tr>
+                {appointments.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.service}</td>
+                    <td>{item.name}</td>
+                    <td>{new Date(item.date).toLocaleDateString()}</td>
+                    <td>{item.time.slice(0, 5)}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-          ))}
-        <p>
+          )}
+        </div>
+        <div>
           <strong>Edit your services:</strong>
           <button
             className="toggle-button"
             style={{ background: "lightgray" }}
-            onClick={() => toogleState(setVservices)}
+            onClick={() => toogleState(setShowServices)}
           >
             <span
               style={{
                 display: "inline-block",
-                transform: Vservices ? "rotate(90deg)" : "rotate(0deg)",
+                transform: showServices ? "rotate(90deg)" : "rotate(0deg)",
                 transition: "transform 0.2s ease",
               }}
             >
               ◥
             </span>
           </button>
-        </p>
-        {Vservices && (
-          <div>
-            {services.length > 0 &&
-              services.map((service) => (
-                <div
-                  key={service.id}
-                  className="card border-black w-100 mx-auto mb-3"
-                >
-                  <Service
-                    name={service.name}
-                    description={service.description}
-                    image={service.image}
-                    price={service.price}
-                    setServices={setServices}
-                    onDelete={() => onDelete(service.name)}
-                  />
-                </div>
-              ))}
-            <Form
-              name={""}
-              description={""}
-              price={""}
-              image={""}
-              handleSub={handleSub}
-            />
-          </div>
-        )}
+          {showServices && (
+            <div>
+              {services.length > 0 &&
+                services.map((service) => (
+                  <div
+                    key={service.id}
+                    className="card border-black w-100 mx-auto mb-3"
+                  >
+                    <Service
+                      name={service.name}
+                      description={service.description}
+                      image={service.image}
+                      price={service.price}
+                      setServices={setServices}
+                      onDelete={() => onDelete(service.name)}
+                    />
+                  </div>
+                ))}
+              <Form
+                name={""}
+                description={""}
+                price={""}
+                image={""}
+                handleSub={handleSub}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

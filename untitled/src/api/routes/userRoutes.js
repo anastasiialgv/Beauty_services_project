@@ -9,6 +9,15 @@ const SECRET_KEY = "glostie";
 
 router.post("/register", (req, res) => {
   const { email, name, surname, age, password } = req.body;
+  const checkEmailQuery = "SELECT email FROM user WHERE email = ?";
+  db.query(checkEmailQuery, [email], (err, results) => {
+    if (err) {
+      return res.status(500).send({ error: "Database error" });
+    }
+
+    if (results.length > 0) {
+      return res.status(400).send({ error: "Email already exists" });
+    }
 
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {

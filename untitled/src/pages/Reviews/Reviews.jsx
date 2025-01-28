@@ -1,5 +1,4 @@
-import Header from "../../components/Header/Header.jsx";
-import Review from "../../components/Review.jsx";
+import Review from "../../components/Review/Review.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -17,19 +16,19 @@ export default function Reviews(isAuthenticated) {
       .catch((err) => {
         console.error("Error /getservices", err);
       });
-  }, [data]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (rating < 0 || rating > 5) {
-      setError("Rating must be between 0 and 5");
+    setError(null);
+    if (rating < 0 || rating > 5 || isNaN(rating)) {
+      setError("Rating must be a number between 0 and 5");
       return;
     }
     if (review.trim() === "") {
       setError("Review text cannot be empty");
       return;
     }
-    setError("");
 
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0];
@@ -53,15 +52,15 @@ export default function Reviews(isAuthenticated) {
         },
       )
       .then(() => {
+        axios
+          .get("http://localhost:5000/getreviews")
+          .then((response) => setData(response.data))
+          .catch((err) => console.error("Error fetching updated reviews", err));
         setReview("");
         setRating(0);
       })
       .catch((err) => {
-        console.error(
-          "Error creating review(1)",
-          err,
-          err.response ? err.response.data : err.message,
-        );
+        console.error("Error creating review ", err);
       });
   };
   return (
@@ -105,7 +104,7 @@ export default function Reviews(isAuthenticated) {
             {error && <div className="text-danger mt-2">{error}</div>}
             <button
               type="submit"
-              className="btn btn-dark w-100"
+              className="btn btn-dark w-100 bstyle"
               disabled={!isAuthenticated.isAuthenticated}
             >
               Submit

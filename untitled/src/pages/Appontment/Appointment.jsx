@@ -13,6 +13,7 @@ export default function Appointment() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [data, setData] = useState([]);
+  const [error, setError] = useState("");
   useEffect(() => {
     axios
       .get("http://localhost:5000/getservices")
@@ -24,6 +25,7 @@ export default function Appointment() {
       })
       .catch((err) => {
         console.error("Error /getservices", err);
+        setError("Could not load services. Please try again later.");
       });
   }, []);
 
@@ -50,6 +52,7 @@ export default function Appointment() {
       })
       .catch((err) => {
         console.error("Error /book", err);
+        setError("Could not book the appointment. Please try again later.");
       });
   };
 
@@ -61,6 +64,7 @@ export default function Appointment() {
           style={{ width: "500px", borderRadius: "15px", borderColor: "black" }}
         >
           <form onSubmit={handleSubmit}>
+            {error && <div className="alert alert-danger">{error}</div>}
             <select
               id="service"
               className="form-select mb-4"

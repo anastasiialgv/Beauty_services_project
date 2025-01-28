@@ -1,0 +1,10 @@
+.pagination {
+    position: fixed;
+    top: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+}

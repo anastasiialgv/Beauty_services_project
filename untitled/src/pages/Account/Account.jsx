@@ -20,6 +20,7 @@ export default function Account() {
       .then((response) => {
         setTimeout(() => {
           setData(response.data);
+          console.log(data);
           setLoading(false);
         }, 2000);
       })
@@ -41,9 +42,13 @@ export default function Account() {
       console.error("Error updating user data:", err);
     }
   };
-
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="spinner_container">
+        <div className="spinner-border me-3"></div>
+        <p className="mt-3 text-muted">Loading, please wait...</p>
+      </div>
+    );
   }
   const handleDelete = async () => {
     try {

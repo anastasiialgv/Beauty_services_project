@@ -5,11 +5,12 @@ import Home from "./pages/Home/Home.jsx";
 import Reviews from "./pages/Reviews/Reviews.jsx";
 import Login from "./pages/Account/Login.jsx";
 import Signin from "./pages/Account/Signin.jsx";
-import Appointment from "./pages/Appointment.jsx";
+import Appointment from "./pages/Appontment/Appointment.jsx";
 import Account from "./pages/Account/Account.jsx";
 import { useState } from "react";
 import AdminPanel from "./pages/AdminPanel/AdminPanel.jsx";
 import Header from "./components/Header/Header.jsx";
+import Loading from "./pages/Loading/Loading.jsx";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -48,6 +49,7 @@ function App() {
         <Route path="/signin" element={<Signin />} />
         <Route path="/appointment" element={<Appointment />} />
         <Route path="/adminpanel" element={<AdminPanel />} />
+        <Route path="/loading" element={<Loading />} />
       </Routes>
     </>
   );

@@ -13,6 +13,11 @@ export default function Login({ setIsAuthenticated, setUserRole }) {
       setError("Email and password cannot be empty");
       return;
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(email)) {
+    //   setError("Invalid email format");
+    //   return;
+    // }
     axios
       .post("http://localhost:5000/login", { email, password })
       .then((response) => {
@@ -20,11 +25,7 @@ export default function Login({ setIsAuthenticated, setUserRole }) {
 
         setIsAuthenticated(true);
         setUserRole(response.data.role);
-        {
-          response.data.role === "ADMIN"
-            ? navigate("/adminpanel")
-            : navigate("/account");
-        }
+        navigate(response.data.role === "ADMIN" ? "/adminpanel" : "/account");
       })
       .catch(() => {
         setError("Invalid email or password");
@@ -54,7 +55,7 @@ export default function Login({ setIsAuthenticated, setUserRole }) {
               Password
             </label>
             <input
-              type="text"
+              type="password"
               className="form-control"
               id="password"
               value={password}
