@@ -1,6 +1,5 @@
 import db from "../db.js";
 import express from "express";
-import multer from "multer";
 
 const router = express.Router();
 router.use(express.json());
@@ -27,32 +26,44 @@ router.get("/getservices", (req, res) => {
 });
 router.post("/addservice", (req, res) => {
   const { name, description, price, image } = req.body;
+
   if (!name || !description || !price) {
     return res.status(400).send({ error: "Missing required fields" });
   }
-  console.log("Request body:", req.body);
+  let imageBuffer = null;
+
+  if (image) {
+    imageBuffer = Buffer.from(image, "base64");
+  }
+
   const query =
     "INSERT INTO service (name, description, price, image) VALUES (?, ?, ?, ?)";
-  db.query(query, [name, description, price, image], (err) => {
+  db.query(query, [name, description, price, imageBuffer], (err) => {
     if (err) {
+      console.error("Database error:", err);
       return res.status(500).send({ error: "Database error" });
     }
     res.status(201).json({ name, description, price, image });
   });
 });
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-router.put("/updateservice", upload.single("image"), (req, res) => {
-  const { name, description, price, key } = req.body;
-  const image = req.file ? req.file.buffer : null;
+
+router.put("/updateservice", (req, res) => {
+  const { name, description, price, image, key } = req.body;
   console.log("Updated data:", { name, description, price, image });
   console.log("Key:", key);
+
+  let imageBuffer = null;
+  if (image) {
+    imageBuffer = Buffer.from(image, "base64");
+  }
+
   const query =
     "UPDATE service SET name = ?, description = ?, price = ?, image = ? WHERE name = ?";
-  const values = [name, description, price, image, key];
+  const values = [name, description, price, imageBuffer, key];
 
-  db.query(query, values, (err, result) => {
+  db.query(query, values, (err) => {
     if (err) {
+      console.error("Database error:", err);
       return res.status(500).send({ error: "Database error" });
     }
     res.status(200).json({
@@ -61,8 +72,8 @@ router.put("/updateservice", upload.single("image"), (req, res) => {
         name,
         description,
         price,
-        image: image
-          ? `data:image/png;base64,${image.toString("base64")}`
+        image: imageBuffer
+          ? `data:image/png;base64,${imageBuffer.toString("base64")}`
           : null,
       },
     });
@@ -71,7 +82,7 @@ router.put("/updateservice", upload.single("image"), (req, res) => {
 router.delete("/deleteservice/:name", (req, res) => {
   const { name } = req.params;
   const query = "DELETE FROM service WHERE name = ?";
-  db.query(query, name, (err, result) => {
+  db.query(query, name, (err) => {
     if (err) {
       return res.status(500).send({ error: "Database error" });
     }

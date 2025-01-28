@@ -19,29 +19,30 @@ router.post("/register", (req, res) => {
       return res.status(400).send({ error: "Email already exists" });
     }
 
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
-    if (err) {
-      return res.status(500).send({ error: "Internal server error" });
-    }
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        return res.status(500).send({ error: "Internal server error" });
+      }
 
-    const query =
-      "INSERT INTO user (email, name, surname, age, password) VALUES (?, ?, ?, ?, ?)";
-    db.query(
-      query,
-      [email, name, surname, age, hashedPassword],
-      (err, result) => {
-        if (err) {
-          if (err.code === "ER_DUP_ENTRY") {
-            return res.status(400).send({ error: "Email already exists" });
+      const query =
+        "INSERT INTO user (email, name, surname, age, password) VALUES (?, ?, ?, ?, ?)";
+      db.query(
+        query,
+        [email, name, surname, age, hashedPassword],
+        (err, result) => {
+          if (err) {
+            if (err.code === "ER_DUP_ENTRY") {
+              return res.status(400).send({ error: "Email already exists" });
+            }
+            return res.status(500).send({ error: "Database error" });
           }
-          return res.status(500).send({ error: "Database error" });
-        }
-        res.status(201).send({
-          message: "User registered successfully",
-          userId: result.insertId,
-        });
-      },
-    );
+          res.status(201).send({
+            message: "User registered successfully",
+            userId: result.insertId,
+          });
+        },
+      );
+    });
   });
 });
 
@@ -130,4 +131,5 @@ router.delete("/deleteuser", authenticateToken, (req, res) => {
     res.status(200).send({ message: "User deleted successfully" });
   });
 });
+
 export default router;

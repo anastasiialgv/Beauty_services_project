@@ -9,18 +9,23 @@ export default function Service({
   image,
   onDelete,
   setServices,
+  handleFileToBase64,
 }) {
   const [Editing, setEditing] = useState(false);
   const handleUpdate = async (updated, key) => {
     try {
-      const formData = new FormData();
-      formData.append("name", updated.name);
-      formData.append("description", updated.description);
-      formData.append("price", updated.price);
-      formData.append("image", updated.image);
-      formData.append("key", key);
+      let base64Image = updated.image
+        ? await handleFileToBase64(updated.image)
+        : null;
+      if (base64Image) {
+        base64Image = base64Image.split(",")[1];
+      }
+      const formData = {
+        ...updated,
+        image: base64Image,
+        key,
+      };
 
-      console.log("Updated data:", formData);
       await axios
         .put("http://localhost:5000/updateservice", formData, {
           headers: {
@@ -28,7 +33,7 @@ export default function Service({
           },
         })
         .then((response) => {
-          const updatedService = response.data;
+          const updatedService = response.data.updatedService;
           setServices((prevServices) =>
             prevServices.map((service) =>
               service.name === key
@@ -38,7 +43,7 @@ export default function Service({
           );
         });
     } catch (err) {
-      console.error("Error updating user data:", err);
+      console.error("Error updating service data:", err);
     }
   };
   return (

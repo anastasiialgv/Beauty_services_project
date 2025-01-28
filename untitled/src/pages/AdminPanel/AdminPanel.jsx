@@ -35,15 +35,41 @@ export default function AdminPanel() {
         setError("Failed to fetch services. Please try again.");
       });
   }, []);
+
+  const handleFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result); // Base64 строка
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleSub = async (addedData) => {
     try {
+      let base64Image = null;
+      if (addedData.image) {
+        base64Image = await handleFileToBase64(addedData.image);
+        base64Image = base64Image.split(",")[1];
+      }
+      const data = {
+        name: addedData.name,
+        description: addedData.description,
+        price: addedData.price,
+        image: base64Image,
+      };
+
       await axios
-        .post("http://localhost:5000/addservice", addedData, {
+        .post("http://localhost:5000/addservice", data, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         })
         .then((response) => {
           const newService = response.data;
           setServices((prevServices) => [...prevServices, newService]);
+          addedData.name = "";
+          addedData.description = "";
+          addedData.price = "";
+          addedData.image = "";
         });
     } catch (err) {
       console.error("Error adding service:", err);
@@ -142,6 +168,7 @@ export default function AdminPanel() {
                       price={service.price}
                       setServices={setServices}
                       onDelete={() => onDelete(service.name)}
+                      handleFileToBase64={handleFileToBase64}
                     />
                   </div>
                 ))}
